@@ -1,0 +1,6 @@
+{
+  "name": "sih-ps9-moil",
+  "description": "MOIL Mine-Planning & Prospectivity Intelligence Dashboard for Ministry of Steel (SIH26009)",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

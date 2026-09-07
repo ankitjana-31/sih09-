@@ -1,0 +1,172 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+  }
+  
+  body {
+    font-family: var(--font-sans);
+    background-color: #111415;
+    color: #e2e2e3;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom scrollbars for technical data-dense panels */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #111415;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #282a2b;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #404849;
+}
+
+/* Low evidence hatched pattern for map grid cells and badges */
+.hatched-pattern {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0.08),
+    rgba(255, 255, 255, 0.08) 3px,
+    transparent 3px,
+    transparent 7px
+  );
+}
+
+.hatched-pattern-dense {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    rgba(226, 226, 227, 0.12),
+    rgba(226, 226, 227, 0.12) 2px,
+    transparent 2px,
+    transparent 5px
+  );
+}
+
+/* Dark mode leaflet map styling */
+.leaflet-container {
+  background-color: #0c0f0f !important;
+  font-family: 'JetBrains Mono', monospace;
+  outline: none;
+}
+
+/* Ensure clean custom icons without default white boxes */
+.leaflet-div-icon {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Custom dark tactical popups */
+.leaflet-popup-content-wrapper {
+  background-color: #191c1d !important;
+  color: #EDEFF1 !important;
+  border: 1px solid #3A4048 !important;
+  border-radius: 4px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.8) !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 11px !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-tip {
+  background-color: #191c1d !important;
+  border: 1px solid #3A4048 !important;
+}
+
+.leaflet-popup-content {
+  margin: 8px 12px !important;
+  line-height: 1.4 !important;
+}
+
+/* Custom technical tooltips */
+.leaflet-tooltip {
+  background-color: #111415 !important;
+  color: #98d0d6 !important;
+  border: 1px solid #488085 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 10px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6) !important;
+  border-radius: 2px !important;
+  padding: 2px 6px !important;
+}
+
+.leaflet-tooltip-top:before {
+  border-top-color: #488085 !important;
+}
+
+/* Concentric rings animation for probability radius */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.25;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.6;
+  }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* 3D Map Perspective Oblique View */
+.map-3d-wrapper {
+  overflow: hidden;
+}
+
+.map-3d-wrapper.is-3d {
+  perspective: 1300px;
+  perspective-origin: 50% 65%;
+}
+
+.map-3d-wrapper.is-3d .leaflet-pane {
+  transform: rotateX(12deg) scale(1.02);
+  transform-origin: 50% 80%;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.map-3d-wrapper.is-2d .leaflet-pane {
+  transform: none;
+  transition: transform 0.4s ease;
+}
+
+/* Radar ping for selected mining area */
+@keyframes radar-scan {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.animate-radar {
+  animation: radar-scan 2.4s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* MapLibre in Leaflet container */
+.maplibregl-map {
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute !important;
+}
+
+
