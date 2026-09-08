@@ -17,9 +17,9 @@ export default function MapLibreLayer({ styleUrl, apiKey, onError }) {
           style: styleUrl,
           maplibreOptions: {
             transformRequest: (url) => {
-              if (url.includes('basemaps.cartocdn.com') && !url.includes('api_key=')) {
+              if (url.includes('basemaps.cartocdn.com') && !url.includes('key=')) {
                 const sep = url.includes('?') ? '&' : '?';
-                return { url: `${url}${sep}api_key=${apiKey}` };
+                return { url: `${url}${sep}key=${apiKey}` };
               }
               return { url };
             },

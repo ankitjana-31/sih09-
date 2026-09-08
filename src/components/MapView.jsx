@@ -35,19 +35,19 @@ const VECTOR_STYLES = {
   dark: {
     id: 'dark',
     name: 'DARK MATTER',
-    styleUrl: `https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json?api_key=${CARTO_API_KEY}`,
+    styleUrl: `https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json?key=${CARTO_API_KEY}`,
     attribution: '&copy; CARTO &copy; OpenStreetMap',
   },
   voyager: {
     id: 'voyager',
     name: 'VOYAGER',
-    styleUrl: `https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json?api_key=${CARTO_API_KEY}`,
+    styleUrl: `https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json?key=${CARTO_API_KEY}`,
     attribution: '&copy; CARTO &copy; OpenStreetMap',
   },
   positron: {
     id: 'positron',
     name: 'POSITRON',
-    styleUrl: `https://basemaps.cartocdn.com/gl/positron-gl-style/style.json?api_key=${CARTO_API_KEY}`,
+    styleUrl: `https://basemaps.cartocdn.com/gl/positron-gl-style/style.json?key=${CARTO_API_KEY}`,
     attribution: '&copy; CARTO &copy; OpenStreetMap',
   },
 };
@@ -57,7 +57,7 @@ const RASTER_PRESETS = {
   dark: {
     id: 'dark',
     name: 'DARK MATTER',
-    url: `https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png?api_key=${CARTO_API_KEY}`,
+    url: `https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png?key=${CARTO_API_KEY}`,
     attribution: '&copy; CARTO &copy; OpenStreetMap',
     subdomains: 'abcd',
     maxZoom: 19,
@@ -65,7 +65,7 @@ const RASTER_PRESETS = {
   voyager: {
     id: 'voyager',
     name: 'VOYAGER',
-    url: `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?api_key=${CARTO_API_KEY}`,
+    url: `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${CARTO_API_KEY}`,
     attribution: '&copy; CARTO &copy; OpenStreetMap',
     subdomains: 'abcd',
     maxZoom: 19,
@@ -73,7 +73,7 @@ const RASTER_PRESETS = {
   positron: {
     id: 'positron',
     name: 'POSITRON',
-    url: `https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png?api_key=${CARTO_API_KEY}`,
+    url: `https://{s}.basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}{r}.png?key=${CARTO_API_KEY}`,
     attribution: '&copy; CARTO &copy; OpenStreetMap',
     subdomains: 'abcd',
     maxZoom: 19,
@@ -378,7 +378,7 @@ export default function MapView({ onCellSelect }) {
   } = useMine();
 
   // Basemap engine mode: 'vector' (MapLibre GL Vector Tiles) vs 'raster' (TileLayer)
-  const [basemapMode, setBasemapMode] = useState('vector');
+  const [basemapMode, setBasemapMode] = useState('raster');
   const [activeBasemap, setActiveBasemap] = useState('dark');
   const [is3DMode, setIs3DMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -503,7 +503,7 @@ export default function MapView({ onCellSelect }) {
     return reserveGeoJson.features.find((f) => f.properties.isApex);
   }, [reserveGeoJson]);
 
-  // Style calculator for subsurface 500m grid cells
+  // Style calculator for subsurface 500m grid cells (translucent glow for clarity)
   const getCellStyle = (properties, isSelected) => {
     const { cell_id, score, evidence_flag, isApex } = properties;
     const isLowEvidence = evidence_flag === 'LOW_EVIDENCE';
@@ -512,7 +512,7 @@ export default function MapView({ onCellSelect }) {
     if (isApex || cell_id === 'BG-704') {
       return {
         fillColor: '#00e5ff',
-        fillOpacity: isSelected ? 0.95 : 0.88,
+        fillOpacity: isSelected ? 0.75 : 0.48,
         color: isSelected ? '#ffffff' : '#00e5ff',
         weight: isSelected ? 3 : 2.5,
       };
@@ -522,7 +522,7 @@ export default function MapView({ onCellSelect }) {
     if (isLowEvidence) {
       return {
         fillColor: '#14181a',
-        fillOpacity: 0.85,
+        fillOpacity: 0.35,
         color: isSelected ? '#00e5ff' : '#4b5563',
         weight: isSelected ? 2 : 1,
         dashArray: '3, 4',
@@ -537,7 +537,7 @@ export default function MapView({ onCellSelect }) {
     if (isTealCluster) {
       return {
         fillColor: '#1096a5',
-        fillOpacity: isSelected ? 0.94 : 0.84,
+        fillOpacity: isSelected ? 0.70 : 0.40,
         color: isSelected ? '#ffffff' : '#22d3ee',
         weight: isSelected ? 2.5 : 1.5,
       };
@@ -551,7 +551,7 @@ export default function MapView({ onCellSelect }) {
     if (isCopperAmberCluster) {
       return {
         fillColor: '#c8732d',
-        fillOpacity: isSelected ? 0.95 : 0.88,
+        fillOpacity: isSelected ? 0.72 : 0.42,
         color: isSelected ? '#ffffff' : '#e58e3c',
         weight: isSelected ? 2.5 : 1.5,
       };
@@ -560,7 +560,7 @@ export default function MapView({ onCellSelect }) {
     // Sterile / Low Background (< 0.38)
     return {
       fillColor: '#181e22',
-      fillOpacity: isSelected ? 0.9 : 0.85,
+      fillOpacity: isSelected ? 0.6 : 0.35,
       color: isSelected ? '#00e5ff' : '#2d373d',
       weight: isSelected ? 2 : 1,
     };
