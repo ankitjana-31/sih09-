@@ -283,19 +283,7 @@ const createApexReticleIcon = () => {
   });
 };
 
-// Radius Distance Tag Badge Icon (Along outer decay ring)
-const createRadiusTagIcon = () => {
-  return L.divIcon({
-    className: 'radius-tag-icon',
-    html: `
-      <div style="transform: translate(-50%, -50%);" class="px-2 py-0.5 bg-[#111415]/95 border border-[#00e5ff]/70 rounded text-[8.5px] text-[#00e5ff] font-mono whitespace-nowrap shadow-2xl backdrop-blur-md flex items-center gap-1.5 pointer-events-none">
-        <span class="w-1.5 h-1.5 rounded-full bg-[#00e5ff] animate-ping"></span>
-        <span class="font-bold tracking-wider">PROSPECTIVITY DECAY RADIUS: 1,150M</span>
-      </div>
-    `,
-    iconSize: [0, 0],
-  });
-};
+
 
 // Cell ID & Score Text Label Icon (Placed in Center of Each 500m Grid Cell)
 const createCellLabelIcon = (cellId, score, isSparse, isApex, isTeal, isCopper) => {
@@ -381,6 +369,7 @@ export default function MapView({ onCellSelect }) {
   const [basemapMode, setBasemapMode] = useState('raster');
   const [activeBasemap, setActiveBasemap] = useState('dark');
   const [is3DMode, setIs3DMode] = useState(false);
+  const [isFullScreenMap, setIsFullScreenMap] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -682,6 +671,20 @@ export default function MapView({ onCellSelect }) {
               <span className={`w-1.5 h-1.5 rounded-full ${is3DMode ? 'bg-[#00e5ff] animate-pulse' : 'bg-[#8B939C]'}`} />
             </button>
 
+            {/* Fullscreen Map Toggle */}
+            <button
+              onClick={() => setIsFullScreenMap(!isFullScreenMap)}
+              className={`px-2.5 py-1 rounded text-xs border flex items-center gap-1.5 transition-all cursor-pointer ${
+                isFullScreenMap
+                  ? 'bg-[#00e5ff]/15 border-[#00e5ff] text-[#00e5ff] shadow-[0_0_10px_rgba(0,229,255,0.2)]'
+                  : 'bg-[#191c1d] border-[#282a2b] text-[#8B939C] hover:text-[#EDEFF1]'
+              }`}
+              title="Toggle Fullscreen Map View (Expand map & hide side inspector)"
+            >
+              <Globe className="w-3 h-3" />
+              <span className="font-bold">{isFullScreenMap ? 'SPLIT VIEW' : 'FULL MAP'}</span>
+            </button>
+
             {/* Scale View Selectors */}
             <div className="flex items-center border border-[#282a2b] rounded overflow-hidden text-xs font-mono">
               <button
@@ -941,7 +944,7 @@ export default function MapView({ onCellSelect }) {
               })}
 
             {/* Concentric Probability Radius Rings */}
-            {radiusActive && apexFeature && layerVisibility.prospectivity && (
+            {radiusActive && apexFeature && (
               <>
                 {/* Inner Probability Core Ring (Radius ~380m) */}
                 <Circle
@@ -966,16 +969,6 @@ export default function MapView({ onCellSelect }) {
                     dashArray: '6, 8',
                     fillColor: 'transparent',
                   }}
-                />
-
-                {/* Radius Distance Tag Badge along the outer ring arc */}
-                <Marker
-                  position={[
-                    apexFeature.properties.center[0] - 0.009,
-                    apexFeature.properties.center[1] - 0.005,
-                  ]}
-                  interactive={false}
-                  icon={createRadiusTagIcon()}
                 />
 
                 {/* Center Tactical Targeting Reticle at Apex BG-704 */}
@@ -1074,7 +1067,7 @@ export default function MapView({ onCellSelect }) {
           {/* Bottom-Left: PROSPECTIVITY INDEX SPECTRUM v4.2 matching prototype */}
           <div
             id="prospectivity-index-spectrum"
-            className="absolute bottom-4 left-4 z-[1000] bg-[#111415]/95 border border-[#282a2b] p-3 rounded shadow-2xl w-84 max-w-[calc(100vw-32px)] backdrop-blur-md font-mono select-none"
+            className="absolute bottom-4 left-4 z-[1000] bg-[#111415]/95 border border-[#282a2b] p-2 rounded shadow-2xl w-72 max-w-[calc(100vw-32px)] backdrop-blur-md font-mono select-none"
           >
             {/* Header */}
             <div className="flex items-center justify-between text-[9px] pb-1.5 border-b border-[#282a2b]">
@@ -1125,19 +1118,21 @@ export default function MapView({ onCellSelect }) {
         </div>
 
         {/* Right Docked Panel: TARGET EVIDENCE INSPECTOR */}
-        <div className="w-[380px] xl:w-[410px] shrink-0 h-full hidden md:block">
-          <EvidenceBreakdown
-            cell={inspectedCell || apexFeature?.properties}
-            allCells={reserveGeoJson?.features}
-            onSelect={(neighborId) => {
-              const f = reserveGeoJson?.features?.find((x) => x.properties.cell_id === neighborId);
-              if (f) {
-                setInspectedCell(f.properties);
-                if (onCellSelect) onCellSelect(f.properties);
-              }
-            }}
-          />
-        </div>
+        {!isFullScreenMap && (
+          <div className="w-[380px] xl:w-[410px] shrink-0 h-full hidden md:block border-l border-[#282a2b]">
+            <EvidenceBreakdown
+              cell={inspectedCell || apexFeature?.properties}
+              allCells={reserveGeoJson?.features}
+              onSelect={(neighborId) => {
+                const f = reserveGeoJson?.features?.find((x) => x.properties.cell_id === neighborId);
+                if (f) {
+                  setInspectedCell(f.properties);
+                  if (onCellSelect) onCellSelect(f.properties);
+                }
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
