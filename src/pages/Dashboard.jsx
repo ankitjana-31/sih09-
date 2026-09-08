@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMine } from '../store/mineStore';
 import { getReserveMap, getProductionForecast, getRiskTier, getRecommendations } from '../api/client';
-import { Compass, TrendingUp, AlertTriangle, Sliders, ArrowRight, ShieldCheck, CheckCircle2, ChevronRight } from 'lucide-react';
-import TrendChart from '../components/TrendChart';
+import { Compass, TrendingUp, AlertTriangle, Sliders, ArrowRight, ShieldCheck, CheckCircle2, ChevronRight, Activity, Cpu, Gauge, Zap } from 'lucide-react';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -47,6 +46,70 @@ export default function Dashboard() {
   const apexScore = apexFeature ? (apexFeature.properties.score * 100).toFixed(1) : '91.4';
   const apexConf = apexFeature ? (apexFeature.properties.confidence * 100).toFixed(1) : '88.2';
 
+  // Active Production Health Nodes for the selected mine
+  const productionHealthNodes = [
+    {
+      id: 'UNIT-01',
+      name: `${selectedMine.name} - Pit North Extraction`,
+      type: 'Open Cast Mining',
+      status: 'OPTIMAL',
+      output: '1,420 MT/day',
+      grade: '44.2% Mn',
+      health: 96,
+      telemetry: 'SCADA Feed • Normal Haulage',
+    },
+    {
+      id: 'UNIT-02',
+      name: `${selectedMine.name} - Central Main Underground Lode`,
+      type: 'Subsurface Stope 04',
+      status: 'HIGH OUTPUT',
+      output: '1,850 MT/day',
+      grade: '46.8% Mn',
+      health: 92,
+      telemetry: 'Shaft 2 Hoist • Stable Vent',
+    },
+    {
+      id: 'UNIT-03',
+      name: `${selectedMine.name} - Primary Crushing & Sizing`,
+      type: 'Processing Plant A',
+      status: 'OPTIMAL',
+      output: '5,100 MT/day',
+      grade: 'Size <25mm',
+      health: 95,
+      telemetry: 'Conveyor C-2 • 98.2% Uptime',
+    },
+    {
+      id: 'UNIT-04',
+      name: `${selectedMine.name} - Heavy Media Separation (HMS)`,
+      type: 'Beneficiation Unit',
+      status: 'OPTIMAL',
+      output: '88.4% Recovery',
+      grade: '+12% Upgrade',
+      health: 91,
+      telemetry: 'Dewatering Cyclones • Active',
+    },
+    {
+      id: 'UNIT-05',
+      name: `${selectedMine.name} - South Stope Extension`,
+      type: 'Exploratory Stope',
+      status: 'THROTTLED',
+      output: '780 MT/day',
+      grade: '39.5% Mn',
+      health: 74,
+      telemetry: 'Monsoon Seepage • Pumping Active',
+    },
+    {
+      id: 'UNIT-06',
+      name: `${selectedMine.name} - Rail Loading Siding`,
+      dispatch: 'Logistics Terminal',
+      status: 'OPTIMAL',
+      output: '3 Rakes / Day',
+      grade: 'Class-I Ore',
+      health: 98,
+      telemetry: 'Weighbridge B • Automated',
+    },
+  ];
+
   return (
     <div className="p-4 sm:p-6 space-y-6 font-mono select-none">
       {/* Top Banner / Breadcrumb */}
@@ -67,7 +130,7 @@ export default function Dashboard() {
 
         <div className="flex items-center gap-2">
           <div className="px-3 py-1 bg-[#191c1d] border border-[#282a2b] rounded text-xs text-[#8B939C] flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-[#4C9A6A]" />
+            <span className="w-2 h-2 rounded-full bg-[#4C9A6A] animate-pulse" />
             <span>MODEL WEIGHTS: v4.2.1-FUSED</span>
           </div>
         </div>
@@ -159,7 +222,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Main Grid: Subsurface Grid Preview & Production Chart */}
+      {/* Main Grid: Subsurface Grid Preview & Active Production Health Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Prospectivity Preview Banner & Cell Breakdown */}
         <div className="lg:col-span-1 bg-[#191c1d] border border-[#282a2b] rounded p-4 flex flex-col justify-between space-y-4">
@@ -209,9 +272,71 @@ export default function Dashboard() {
           </button>
         </div>
 
-        {/* Right 2 Columns: Production Trend Trajectory */}
-        <div className="lg:col-span-2">
-          <TrendChart forecastData={forecastData} />
+        {/* Right 2 Columns: Active Production Health Grid */}
+        <div className="lg:col-span-2 bg-[#191c1d] border border-[#282a2b] rounded p-4 flex flex-col justify-between">
+          <div className="flex items-center justify-between pb-3 border-b border-[#282a2b]">
+            <div className="flex items-center gap-2">
+              <Gauge className="w-4 h-4 text-[#488085]" />
+              <h3 className="text-xs font-bold text-[#EDEFF1] tracking-wider uppercase">
+                ACTIVE PRODUCTION HEALTH GRID // REAL-TIME TELEMETRY
+              </h3>
+            </div>
+            <span className="text-[10px] text-[#4C9A6A] bg-[#4C9A6A]/10 px-2 py-0.5 rounded border border-[#4C9A6A]/30 flex items-center gap-1.5 font-semibold">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#4C9A6A] animate-pulse" />
+              SCADA CONNECTED
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 my-3">
+            {productionHealthNodes.map((node) => {
+              const isOptimal = node.status === 'OPTIMAL' || node.status === 'HIGH OUTPUT';
+              return (
+                <div key={node.id} className="bg-[#111415] border border-[#282a2b] p-3 rounded flex flex-col justify-between hover:border-[#488085]/60 transition-colors">
+                  <div>
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="text-[#8B939C] font-semibold">{node.id} • {node.type}</span>
+                      <span className={`px-1.5 py-0.5 rounded text-[9.5px] font-bold ${
+                        isOptimal ? 'bg-[#4C9A6A]/15 text-[#4C9A6A] border border-[#4C9A6A]/30' : 'bg-[#D1A438]/15 text-[#D1A438] border border-[#D1A438]/30'
+                      }`}>
+                        {node.status}
+                      </span>
+                    </div>
+
+                    <div className="text-xs font-bold text-[#EDEFF1] mt-1.5 truncate">
+                      {node.name}
+                    </div>
+
+                    <div className="flex items-center justify-between text-xs mt-2 pt-2 border-t border-[#282a2b]">
+                      <div>
+                        <span className="text-[10px] text-[#8B939C]">RATE: </span>
+                        <strong className="text-[#98d0d6]">{node.output}</strong>
+                      </div>
+                      <div>
+                        <span className="text-[10px] text-[#8B939C]">GRADE: </span>
+                        <strong className="text-[#EDEFF1]">{node.grade}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-2.5 pt-2 border-t border-[#282a2b]/60 flex items-center justify-between text-[10px]">
+                    <span className="text-[#8B939C] truncate">{node.telemetry}</span>
+                    <span className="text-[#98d0d6] font-bold">{node.health}% Health</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="pt-2 border-t border-[#282a2b] flex items-center justify-between text-[11px] text-[#8B939C]">
+            <span>Active Operational Pits & Processing Plants</span>
+            <button
+              onClick={() => navigate('/production-risk')}
+              className="text-[#488085] hover:text-[#98d0d6] font-semibold flex items-center gap-1 cursor-pointer"
+            >
+              <span>View Full Tonnage Trajectory & Risk Matrix</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </div>
 

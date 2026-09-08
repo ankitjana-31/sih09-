@@ -16,20 +16,28 @@ export function AuthProvider({ children }) {
     const saved = localStorage.getItem('moil_user_profile');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (parsed.name === 'Dr. A. Sharma') {
+          parsed.name = 'Ankit Jana';
+          localStorage.setItem('moil_user_profile', JSON.stringify(parsed));
+          return parsed;
+        }
+        return parsed;
       } catch (e) {
         // fallthrough
       }
     }
-    return {
-      username: 'a.sharma',
-      name: 'Dr. A. Sharma',
+    const defaultUser = {
+      username: 'ankit.jana',
+      name: 'Ankit Jana',
       role: 'Sr. Mine Planner',
       division: 'Directorate of Mine Planning & Geosciences',
       designation: 'Sr. Mine Planner',
       badgeId: 'MOIL-EMP-4481',
       clearance: 'DGMS / UNFC Level-4'
     };
+    localStorage.setItem('moil_user_profile', JSON.stringify(defaultUser));
+    return defaultUser;
   });
   const [loading, setLoading] = useState(false);
 
@@ -48,7 +56,7 @@ export function AuthProvider({ children }) {
 
       const profile = data.user || {
         username: username || 'a.sharma',
-        name: 'Dr. A. Sharma',
+        name: 'Ankit Jana',
         role: 'Sr. Mine Planner',
         division: 'Directorate of Mine Planning & Geosciences',
         designation: 'Sr. Mine Planner',

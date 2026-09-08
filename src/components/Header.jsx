@@ -63,7 +63,7 @@ export default function Header() {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2.5 pl-3 border-l border-[#282a2b]">
             <div className="text-right hidden sm:block">
-              <div className="text-xs font-medium text-[#EDEFF1]">{user?.name || 'Dr. A. Sharma'}</div>
+              <div className="text-xs font-medium text-[#EDEFF1]">{user?.name || 'Ankit Jana'}</div>
               <div className="text-[10px] font-mono text-[#8B939C]">{user?.role || 'Sr. Mine Planner'}</div>
             </div>
             <div className="w-7 h-7 rounded bg-[#1d2021] border border-[#488085]/60 flex items-center justify-center text-[#98d0d6]" title={user?.badgeId || 'MOIL'}>

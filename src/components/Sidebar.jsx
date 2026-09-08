@@ -27,7 +27,7 @@ export default function Sidebar() {
               </span>
             </div>
             <span className="text-[11px] font-mono text-[#8B939C] tracking-wide">
-              SIH26889 v4.2
+              SIH09 v4.2
             </span>
           </div>
         </div>

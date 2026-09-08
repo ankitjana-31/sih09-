@@ -115,8 +115,8 @@ export async function login(username, password) {
       access_token: mockToken,
       token_type: 'bearer',
       user: {
-        username: username || 'a.sharma',
-        name: 'Dr. A. Sharma',
+        username: username || 'ankit.jana',
+        name: 'Ankit Jana',
         role: 'Sr. Mine Planner',
         division: 'Directorate of Mine Planning & Geosciences',
         sector: 'Manganese Belt Sector 04',
